@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>English Prep</title>
+<style>
+/* ===== Палитра: оливковый, кремовый, пыльно-зелёный, глубокий серый ===== */
+:root{--ink:#2a2824;--soft:rgba(42,40,36,.6);--olive:#8a9a6a;--sage:#c9d3b6;--cream:#faf7f0;--line:rgba(255,255,255,.9)}
+*{box-sizing:border-box;margin:0}
+body{font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:linear-gradient(165deg,#fbf8f1 0%,#f3f1ec 50%,#edf1f4 100%);min-height:100vh;overflow-x:hidden}
+
+/* ===== Фон: светлые размытые 3D-сферы (CSS-градиенты, blur 30px) ===== */
+.bg{position:fixed;inset:0;z-index:-1;overflow:hidden}
+.bg i{position:absolute;border-radius:50%;filter:blur(30px);opacity:.85}
+.bg i:nth-child(1){width:42vmax;height:42vmax;left:-12vmax;top:-12vmax;background:radial-gradient(circle at 32% 28%,#fff,#ffe5d3 45%,#f4c3a6)}
+.bg i:nth-child(2){width:36vmax;height:36vmax;right:-10vmax;top:24vh;background:radial-gradient(circle at 30% 28%,#fff,#e6f2f8 48%,#bcd9ea)}
+.bg i:nth-child(3){width:32vmax;height:32vmax;left:20vw;bottom:-14vmax;background:radial-gradient(circle at 34% 30%,#fff,#f7f2ea 55%,#ddd6ca)}
+
+.wrap{max-width:980px;margin:0 auto;padding:40px 18px 80px}
+h1{font-size:clamp(2.8rem,9vw,5.6rem);font-weight:300;letter-spacing:-.05em;line-height:1}
+h2{font-size:clamp(1.6rem,4vw,2.2rem);font-weight:300;letter-spacing:-.03em;margin-bottom:14px}
+.sub{color:var(--soft);font-weight:400;margin:12px 0 28px}
+
+/* ===== Матовое стекло: больше прозрачности, тёмный текст для читаемости ===== */
+.glass{background:rgba(255,255,255,.6);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.95);border-radius:28px;padding:26px;box-shadow:0 6px 24px rgba(70,55,40,.06)}
+
+.screen{display:none}.screen.on{display:block}
+.pills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px}
+.pill,.btn{font:inherit;font-weight:500;color:var(--ink);background:rgba(255,255,255,.65);border:1px solid rgba(42,40,36,.1);border-radius:999px;padding:11px 22px;cursor:pointer;transition:.2s}
+.pill:hover,.btn:hover{background:#fff}
+.pill.on{background:var(--ink);color:var(--cream);border-color:var(--ink)}
+.btn.main{background:var(--ink);border-color:var(--ink);color:var(--cream)}
+:focus-visible{outline:2px solid var(--olive);outline-offset:2px}
+
+/* ===== Карточки: стекло, цветное размытое свечение и 3D-сфера в углу ===== */
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.card{position:relative;overflow:hidden;min-height:170px;cursor:pointer;font:inherit;color:var(--ink);text-align:left;display:flex;flex-direction:column;justify-content:flex-end;gap:4px;transition:.25s}
+.card:hover{transform:translateY(-4px)}
+.card b,.card span{position:relative;z-index:1}
+.card b{font-size:1.5rem;font-weight:400;letter-spacing:-.02em}
+.card span{font-size:.92rem;color:var(--soft)}
+.card::before{content:"";position:absolute;left:-15%;bottom:-50%;width:95%;height:95%;background:radial-gradient(circle,rgba(244,195,166,.35),transparent 66%);filter:blur(14px)}
+.card::after{content:"";position:absolute;right:-20px;top:-20px;width:112px;height:112px;border-radius:50%;background:radial-gradient(circle at 30% 28%,#fff 0,#ffe6d6 22%,#f3bfa3 62%,#dba487 100%);box-shadow:inset -10px -12px 22px rgba(190,130,100,.22),0 12px 26px rgba(120,90,60,.12)}
+.card:nth-child(2n)::after{background:radial-gradient(circle at 30% 28%,#fff 0,#e6f2f8 22%,#bcd9ea 62%,#93bad2 100%);box-shadow:inset -10px -12px 22px rgba(90,140,170,.2),0 12px 26px rgba(90,120,140,.12)}
+.card:nth-child(3n)::after{background:radial-gradient(circle at 30% 28%,#fff 0,#faf6ee 30%,#e4ddd0 70%,#cfc6b6 100%);box-shadow:inset -10px -12px 22px rgba(130,115,90,.15),0 12px 26px rgba(120,100,70,.1)}
+
+/* ===== Внутренние экраны ===== */
+.back{margin-bottom:18px}
+.item{display:block;width:100%;margin-bottom:12px;text-align:left;border-radius:20px}
+.text{line-height:1.85;font-size:1.12rem;margin:16px 0;max-width:70ch}
+.w{border-bottom:2px dotted #c68f6c;cursor:pointer}
+.w.saved{background:rgba(244,195,166,.4);border-radius:4px}
+.tr,.out{background:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.95);border-radius:18px;padding:16px;margin:12px 0;line-height:1.8}
+.tr{display:none}.out{min-height:70px}
+.q{margin:16px 0;padding-top:14px;border-top:1px solid rgba(38,43,38,.12)}
+.opts,.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
+.opt.right{background:#7f9a5b;color:#fff;border-color:#7f9a5b}.opt.wrong{background:#b0675c;color:#fff;border-color:#b0675c}
+.mic{width:104px;height:104px;border-radius:50%;margin:18px auto;display:block}
+.mic.rec{background:#b0675c;animation:p 1s infinite}@keyframes p{50%{opacity:.55}}
+textarea{width:100%;min-height:260px;border-radius:20px;border:1px solid rgba(42,40,36,.1);background:rgba(255,255,255,.7);color:var(--ink);padding:16px;font:inherit;line-height:1.7;resize:vertical}
+.timer{font-size:2.6rem;font-weight:300;margin:8px 0}
+
+.item.pic{display:flex;align-items:center;gap:16px;padding:10px 20px 10px 10px;border-radius:24px;font-size:1.1rem}
+.thumb,.hero{object-fit:cover;background:linear-gradient(135deg,#ffe5d3,#e6f2f8);display:block}
+.thumb{width:96px;height:96px;border-radius:18px;flex:none}
+.hero{width:100%;height:clamp(180px,38vw,320px);border-radius:22px;margin-bottom:18px}
+/* ===== Мобильный: одна колонка, крупный текст ===== */
+@media(max-width:620px){.grid{grid-template-columns:1fr}.glass{padding:20px}.text{font-size:1.2rem}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="bg"><i></i><i></i><i></i></div>
+<div class="wrap">
+
+<!-- Главный экран -->
+<div id="home" class="screen on">
+  <h1>English Prep</h1>
+  <p class="sub">Подготовка к IELTS. Выберите уровень и раздел.</p>
+  <div class="pills" id="levels"></div>
+  <div class="grid">
+    <button class="glass card" data-go="reading"><b>Reading</b><span>Чтение</span></button>
+    <button class="glass card" data-go="listening"><b>Listening</b><span>Аудирование</span></button>
+    <button class="glass card" data-go="speaking"><b>Speaking</b><span>Говорение</span></button>
+    <button class="glass card" data-go="writing"><b>Writing</b><span>Эссе, Task 2</span></button>
+    <button class="glass card" data-go="vocab"><b>Vocabulary</b><span>Словарь</span></button>
+  </div>
+</div>
+
+<!-- Внутренний экран (контент подставляется скриптом) -->
+<div id="sec" class="screen">
+  <button class="btn back" onclick="show('home')">← Назад</button>
+  <div class="glass" id="secBody"></div>
+</div>
+
+</div>
+
+<script>
+/* =====================================================================
+   БАЗА ТЕКСТОВ. Чтобы изменить текст — правьте поля ниже.
+   title — название; img — ссылка на картинку Unsplash (можно заменить на свою); text — английский текст; ru — перевод;
+   words — сложные слова [[слово ТОЧНО как в тексте, перевод], ...];
+   q — вопросы [[утверждение, ответ]], ответ: "T" True, "F" False, "N" Not Given.
+   ===================================================================== */
+const TEXTS = {
+
+A1:[{title:"Penguins",img:"https://unsplash.com/photos/WPT8PoYvVKk/download?force=true&w=900",
+text:"Penguins are birds, but they cannot fly. They live in the south of our planet, where it is very cold. Many penguins live in Antarctica, a huge place with snow and ice. A penguin has thick feathers and a layer of fat under its skin. This keeps the bird warm, even when the wind is strong. Penguins are excellent swimmers. They use their wings like small fins, and they swim very fast. The gentoo penguin can swim at about thirty-five kilometres an hour. Penguins eat fish, small sea animals and krill. They catch their food under the water and swallow it quickly. The biggest penguin is the emperor penguin. It is about one metre tall and weighs around thirty kilograms. Emperor penguins have a special way to have a baby. The mother lays one egg and goes to the sea to find food. The father stays and keeps the egg warm on his feet. He does not eat for two months! When the baby comes out, the mother comes back with food. Penguins live in big groups, and they stand very close together when it is cold. They take turns, so every penguin can be in the warm middle for some time. Scientists study penguins because they show us how the ice and the sea are changing. Today, the ice in some places is getting smaller, and this is a problem for the birds. Many people want to protect these brave animals and their cold home.",
+ru:"Пингвины — это птицы, но они не умеют летать. Они живут на юге нашей планеты, где очень холодно. Многие пингвины живут в Антарктиде — огромном месте со снегом и льдом. У пингвина густые перья и слой жира под кожей. Это согревает птицу, даже когда ветер сильный. Пингвины — отличные пловцы. Они используют крылья как маленькие плавники и плавают очень быстро. Папуанский пингвин может плыть со скоростью около тридцати пяти километров в час. Пингвины едят рыбу, мелких морских животных и криль. Они ловят еду под водой и быстро её глотают. Самый большой пингвин — императорский. Он около метра ростом и весит примерно тридцать килограммов. У императорских пингвинов особый способ растить детей. Мама откладывает одно яйцо и уходит в море за едой. Папа остаётся и греет яйцо на своих лапах. Он ничего не ест два месяца! Когда малыш появляется на свет, мама возвращается с едой. Пингвины живут большими группами и стоят очень близко друг к другу, когда холодно. Они меняются местами, поэтому каждый пингвин какое-то время может быть в тёплой середине. Учёные изучают пингвинов, потому что они показывают, как меняются лёд и море. Сегодня лёд в некоторых местах становится меньше, и это проблема для птиц. Многие люди хотят защитить этих смелых животных и их холодный дом.",
+words:[["feathers","перья"],["layer","слой"],["swallow","глотать"],["weighs","весит"],["Scientists","учёные"],["protect","защищать"]],
+q:[["Penguins can fly short distances.","F"],["The layer of fat helps penguins stay warm.","T"],["The father emperor penguin keeps the egg on his feet.","T"],["Penguins eat only krill.","F"],["Baby penguins can swim after one week.","N"]]}],
+
+A2:[{title:"The Story of Coffee",img:"https://unsplash.com/photos/cEHO-O8I5ko/download?force=true&w=900",
+text:"Many people start their day with a cup of coffee, but not everyone knows where it comes from. A famous story says that coffee was discovered in Ethiopia about a thousand years ago. A young man called Kaldi looked after goats. One day he saw that the goats were very energetic after eating small red berries from a bush. Kaldi tried the berries himself and felt full of energy too. Later, people in Yemen began to make a hot drink from the seeds of these berries. They roasted the seeds and mixed them with water. Soon coffee became popular in the Arab world, and special coffee houses opened in many cities. People went there to talk, play games and listen to music. In the seventeenth century, traders brought coffee to Europe. At first, some people did not trust the strange black drink, but in time they started to love it. Today coffee grows in warm countries near the equator. Brazil is the biggest producer in the world, and farmers there harvest millions of kilos every year. The plant needs rain, sun and rich soil. After the harvest, workers dry the beans and send them to factories. Coffee is also an important part of daily life in the north. People in Finland drink more coffee than people in any other country, about twelve kilos per person every year. Doctors say that one or two cups a day are fine for most adults, but too much coffee can make it hard to sleep.",
+ru:"Многие люди начинают день с чашки кофе, но не все знают, откуда он взялся. Известная история гласит, что кофе открыли в Эфиопии около тысячи лет назад. Молодой человек по имени Калди пас коз. Однажды он заметил, что козы очень бодры после того, как поели маленькие красные ягоды с куста. Калди сам попробовал ягоды и почувствовал прилив сил. Позже люди в Йемене начали готовить горячий напиток из семян этих ягод. Они обжаривали семена и смешивали их с водой. Вскоре кофе стал популярным в арабском мире, и во многих городах открылись особые кофейни. Люди ходили туда поговорить, поиграть в игры и послушать музыку. В семнадцатом веке торговцы привезли кофе в Европу. Сначала некоторые не доверяли странному чёрному напитку, но со временем полюбили его. Сегодня кофе растёт в тёплых странах около экватора. Бразилия — крупнейший в мире производитель, и фермеры там собирают миллионы килограммов каждый год. Растению нужны дождь, солнце и плодородная почва. После сбора урожая рабочие сушат зёрна и отправляют их на фабрики. Кофе — также важная часть повседневной жизни на севере. Жители Финляндии пьют больше кофе, чем жители любой другой страны, около двенадцати килограммов на человека в год. Врачи говорят, что одна-две чашки в день безвредны для большинства взрослых, но слишком много кофе может помешать спать.",
+words:[["energetic","энергичный, бодрый"],["roasted","обжаривали"],["traders","торговцы"],["equator","экватор"],["producer","производитель"],["harvest","собирать урожай"],["soil","почва"]],
+q:[["Kaldi lived in Yemen.","F"],["The goats were energetic after eating red berries.","T"],["Traders brought coffee to Europe in the seventeenth century.","T"],["Finland is the biggest coffee producer in the world.","F"],["The first European coffee houses were opened by Kaldi.","N"]]}],
+
+B1:[{title:"Cities Built for Bicycles",img:"https://unsplash.com/photos/1ClRB3EbqVo/download?force=true&w=900",
+text:"In many European cities, the bicycle is no longer just a hobby; it is the fastest and cheapest way to get around. The Netherlands is the best-known example. There are more bicycles than people in the country, and cyclists can use thousands of kilometres of separate paths. Copenhagen, in Denmark, has a similar reputation: around half of its residents ride a bike to work or school every day. This did not happen by accident. In the 1970s, both countries had serious problems with traffic accidents and air pollution. After public protests, governments decided to invest in cycling instead of building more motorways. Today, experts agree that this decision has brought many benefits. Cycling keeps people fit, reduces noise and makes the air cleaner. It also saves money, because a bike is much cheaper than a car, and it needs very little space. However, the change was not easy everywhere. In cities with heavy traffic and narrow streets, planners often struggle to find room for safe lanes. Some drivers complain that bike paths make journeys slower, and many beginners feel nervous when they share the road with cars. Weather can also discourage people, although Dutch cyclists ride in the rain without much fuss. Researchers suggest that the most important factor is safety. When cyclists feel protected by physical barriers, more people, including children and older adults, are willing to try. As a result, several cities in other continents are now copying these ideas and building their own networks of lanes. It may take years, but the idea is spreading steadily.",
+ru:"Во многих европейских городах велосипед давно не просто хобби, а самый быстрый и дешёвый способ передвижения. Самый известный пример — Нидерланды. В стране велосипедов больше, чем людей, а велосипедисты могут пользоваться тысячами километров отдельных дорожек. Копенгаген в Дании имеет похожую репутацию: около половины жителей ездят на велосипеде на работу или учёбу каждый день. Это произошло не случайно. В 1970-х в обеих странах были серьёзные проблемы с авариями и загрязнением воздуха. После общественных протестов правительства решили вкладываться в велосипедное движение вместо строительства новых автомагистралей. Сегодня эксперты согласны, что это решение принесло много пользы. Велосипед поддерживает форму, снижает шум и делает воздух чище. Он также экономит деньги, потому что стоит намного дешевле машины и занимает очень мало места. Однако перемены давались не везде легко. В городах с плотным движением и узкими улицами планировщикам часто трудно найти место для безопасных полос. Некоторые водители жалуются, что велодорожки замедляют поездки, а многие новички нервничают, когда делят дорогу с автомобилями. Погода тоже может отпугивать, хотя голландские велосипедисты едут под дождём без лишней суеты. Исследователи считают, что важнейший фактор — безопасность. Когда велосипедисты чувствуют защиту физических барьеров, больше людей, включая детей и пожилых, готовы попробовать. В результате несколько городов на других континентах сейчас копируют эти идеи и строят собственные сети велополос. Это может занять годы, но идея неуклонно распространяется.",
+words:[["reputation","репутация"],["pollution","загрязнение"],["invest","вкладывать"],["benefits","преимущества"],["struggle","с трудом пытаться"],["barriers","барьеры"],["steadily","неуклонно"]],
+q:[["There are fewer bicycles than people in the Netherlands.","F"],["Both countries had traffic and pollution problems in the 1970s.","T"],["Dutch governments built more motorways after the protests.","F"],["The text says safety is the most important factor.","T"],["Most people in Copenhagen own two bicycles.","N"]]}]
+
+,
+B2:[{title:"The Cost of Fast Fashion",img:"https://unsplash.com/photos/JGtPrdnMgQc/download?force=true&w=900",
+text:"Between 2000 and 2014, global clothing production roughly doubled, driven largely by the rise of fast fashion: cheap, trendy garments that retailers replace with new collections every few weeks. Consumers have embraced this model enthusiastically, yet its environmental consequences are increasingly difficult to ignore. According to frequently cited estimates, producing a single cotton T-shirt can require around 2,700 litres of water, roughly what one person drinks over two and a half years. Moreover, the industry is often blamed for up to ten per cent of global carbon emissions, although this figure remains disputed by some analysts. Synthetic fabrics such as polyester create a further problem, since every wash releases tiny plastic fibres that eventually reach the oceans. Perhaps the most striking issue is waste. Many garments are worn only a handful of times before being discarded, and a large proportion ends up in landfill or is burned. Campaigners argue that the low prices hide the true cost, which is paid by workers in poorly regulated factories and by the ecosystems near them. In response, some brands have introduced recycling schemes and collections made from recycled materials. Critics, however, regard such initiatives as little more than clever marketing unless companies also reduce the volume they produce. Meanwhile, second-hand platforms are flourishing, particularly among younger shoppers who see buying used clothes as both thrifty and fashionable. Governments are beginning to intervene too: several European countries are preparing laws that would make producers responsible for the disposal of the clothes they sell. Whether these measures will change habits on a large scale remains to be seen, but the debate has clearly moved from the margins into the mainstream.",
+ru:"Между 2000 и 2014 годами мировое производство одежды примерно удвоилось, главным образом из-за роста «быстрой моды»: дешёвых модных вещей, которые магазины заменяют новыми коллекциями каждые несколько недель. Покупатели с энтузиазмом приняли эту модель, но её последствия для окружающей среды всё труднее игнорировать. По часто цитируемым оценкам, на производство одной хлопковой футболки может уходить около 2700 литров воды — примерно столько человек выпивает за два с половиной года. Кроме того, отрасль нередко обвиняют в выбросе до десяти процентов мировых выбросов углерода, хотя некоторые аналитики оспаривают эту цифру. Синтетические ткани вроде полиэстера создают ещё одну проблему: при каждой стирке в воду попадают мельчайшие пластиковые волокна, которые в итоге достигают океанов. Пожалуй, самая поразительная проблема — отходы. Многие вещи надевают лишь несколько раз, а затем выбрасывают, и значительная их часть оказывается на свалке или сжигается. Активисты утверждают, что низкие цены скрывают истинную стоимость, которую платят работники плохо регулируемых фабрик и экосистемы рядом с ними. В ответ некоторые бренды запустили программы переработки и коллекции из переработанных материалов. Критики, однако, считают такие инициативы лишь ловким маркетингом, если компании не сокращают объёмы производства. Тем временем платформы для подержанных вещей процветают, особенно среди молодых покупателей, для которых покупка б/у одежды одновременно экономна и модна. Правительства тоже начинают вмешиваться: несколько европейских стран готовят законы, по которым производители будут отвечать за утилизацию продаваемой одежды. Изменят ли эти меры привычки в больших масштабах — покажет время, но дискуссия явно переместилась с периферии в центр внимания.",
+words:[["garments","предметы одежды"],["disputed","оспаривается"],["Synthetic","синтетический"],["discarded","выброшенный"],["landfill","свалка"],["thrifty","экономный"],["intervene","вмешиваться"]],
+q:[["Clothing production roughly doubled between 2000 and 2014.","T"],["All analysts agree on the industry's share of carbon emissions.","F"],["Washing polyester releases tiny plastic fibres.","T"],["The text claims recycling schemes have solved the waste problem.","F"],["Second-hand sales are growing fastest in Asia.","N"]]}],
+
+C1:[{title:"The Vanishing Voices",img:"https://unsplash.com/photos/l7dbl-sUg3k/download?force=true&w=900",
+text:"Linguists estimate that roughly half of the world's seven thousand languages could vanish by the end of this century, a rate of loss that dwarfs the extinction of most animal species. A language typically dies when its last fluent speakers pass away without having transmitted it to their children, a process that frequently begins generations earlier, when parents conclude that a dominant language offers better prospects. Economic pressures, urban migration and, historically, state policies that penalised minority tongues have all accelerated this decline. The consequences extend well beyond sentiment. Each language encodes a distinctive body of knowledge, from ecological observations to intricate kinship systems, and much of this is seldom documented elsewhere. When a community's language disappears, so does a unique vantage point on human cognition, which researchers rely on to test theories about how the mind structures experience. Revitalisation efforts, nonetheless, offer grounds for cautious optimism. Hawaiian, once reduced to fewer than a thousand native speakers, has been revived through immersion schools, while Welsh has benefited from sustained government investment and a vibrant media presence. Technology presents a paradox: digital platforms tend to privilege major languages, yet they also allow dispersed speakers to form online communities and to build dictionaries and learning apps at minimal cost. Sceptics caution that revival is arduous and costly, and they question whether artificially sustained languages can ever regain the everyday fluency of natural transmission. Proponents counter that even partial recovery restores dignity and continuity to communities whose heritage was long suppressed. Ultimately, the fate of endangered languages depends less on linguists than on the willingness of speakers to use them daily.",
+ru:"Лингвисты оценивают, что примерно половина из семи тысяч языков мира может исчезнуть к концу этого века — такие темпы потерь намного превышают вымирание большинства видов животных. Язык обычно умирает, когда его последние носители уходят из жизни, не передав его детям, и этот процесс нередко начинается поколениями раньше, когда родители решают, что доминирующий язык даёт лучшие перспективы. Экономическое давление, миграция в города и, исторически, государственная политика, наказывавшая меньшинства за их языки, ускорили этот упадок. Последствия выходят далеко за рамки сентиментальности. Каждый язык хранит особый свод знаний — от экологических наблюдений до сложных систем родства, — и многое из этого редко записано где-либо ещё. Когда исчезает язык сообщества, исчезает и уникальная точка зрения на человеческое мышление, на которую опираются исследователи, проверяя теории о том, как разум структурирует опыт. Тем не менее усилия по возрождению дают основания для осторожного оптимизма. Гавайский язык, некогда сократившийся до менее чем тысячи носителей, возрождён благодаря школам погружения, а валлийский выиграл от устойчивых государственных вложений и яркого присутствия в медиа. Технологии создают парадокс: цифровые платформы склонны отдавать предпочтение крупным языкам, но позволяют рассеянным носителям создавать онлайн-сообщества, словари и учебные приложения с минимальными затратами. Скептики предупреждают, что возрождение трудоёмко и дорого, и сомневаются, смогут ли искусственно поддерживаемые языки вернуть повседневную беглость естественной передачи. Сторонники возражают, что даже частичное восстановление возвращает достоинство и преемственность сообществам, чьё наследие долго подавлялось. В конечном счёте судьба исчезающих языков зависит не столько от лингвистов, сколько от готовности носителей использовать их каждый день.",
+words:[["vanish","исчезнуть"],["transmitted","передал"],["penalised","наказывала"],["vantage","точка обзора"],["Revitalisation","возрождение"],["dispersed","рассеянный"],["arduous","трудный"]],
+q:[["The loss of languages is described as faster than the extinction of most animal species.","T"],["Language death usually begins suddenly when the last speaker dies.","F"],["Hawaiian has been revived partly through immersion schools.","T"],["Technology is said to harm minority languages only.","F"],["Welsh now has more speakers than English in Wales.","N"]]}]
+
+};
+
+/* ===== Темы эссе IELTS Task 2 ===== */
+const TOPICS=[
+"Some people think university education should be free for everyone. To what extent do you agree or disagree?",
+"Technology makes people less sociable. Discuss both views and give your own opinion.",
+"Children spend too much time on screens. What are the causes and what solutions can you suggest?",
+"Working from home is better than working in an office. Do you agree or disagree?",
+"Public transport should be free in big cities. What are the advantages and disadvantages?"];
+
+/* ===== Speaking: задание и образец ответа (меняются по неделям) ===== */
+const SPEAK=[
+{task:"Describe a place in nature you would like to visit. Say where it is, what you would do there, and why it appeals to you.",sample:"I would love to visit Lake Baikal in Russia. It is the deepest lake on Earth, and its water is incredibly clear. I would hike along the shore and, in winter, walk on the transparent ice. It appeals to me because I enjoy quiet places far from the city."},
+{task:"Talk about a skill you learned recently. Explain how you learned it and why it is useful.",sample:"Recently I learned to cook simple Italian dishes. I watched online videos and practised every weekend. It is useful because it saves money and helps me eat healthier."}];
+
+/* ===== Недельная ротация: номер недели в году выбирает текст уровня ===== */
+const weekIdx=()=>Math.floor(Date.now()/(1000*60*60*24*7)); // номер недели: каждую неделю меняется на 1
+function weeklyText(l){const a=TEXTS[l]||[];return a.length?a[weekIdx()%a.length]:null;}
+
+/* ===== Состояние и навигация (display: none / block) ===== */
+let level=localStorage.getItem('level')||'A1',timerId=null;
+const $=s=>document.querySelector(s), body=h=>{$('#secBody').innerHTML=h;};
+function show(id){document.querySelectorAll('.screen').forEach(e=>e.classList.toggle('on',e.id===id));window.speechSynthesis&&speechSynthesis.cancel();clearInterval(timerId);scrollTo(0,0);}
+
+/* Таблетки выбора уровня */
+const lv=$('#levels');
+['A1','A2','B1','B2','C1'].forEach(l=>{const b=document.createElement('button');b.className='pill';b.textContent=l;b.onclick=()=>{level=l;localStorage.setItem('level',l);mark();};lv.appendChild(b);});
+function mark(){[...lv.children].forEach(b=>b.classList.toggle('on',b.textContent===level));}
+mark();
+document.querySelectorAll('[data-go]').forEach(c=>c.onclick=()=>{show('sec');({reading,listening,speaking,writing,vocab})[c.dataset.go]();});
+
+/* Подчёркивание сложных слов в тексте */
+function markWords(t){
+  const saved=JSON.parse(localStorage.getItem('words')||'[]').map(x=>x.w);let h=t.text;
+  t.words.forEach(([w,tr])=>{h=h.replace(new RegExp('\\b'+w+'\\b'),m=>`<span class="w${saved.includes(w)?' saved':''}" data-w="${w}" data-t="${tr}">${m}</span>`);});
+  return h;
+}
+const pic=(t,c)=>t.img?`<img class="${c}" src="${t.img}" alt="" loading="lazy" onerror="this.style.opacity=0">`:`<div class="${c}"></div>`; // если картинка не загрузилась (офлайн) — остаётся пастельный фон
+const noText=()=>'<p class="sub">Для этого уровня текст пока не добавлен. Выберите другой уровень.</p>';
+
+/* ===== Reading ===== */
+function reading(){const t=weeklyText(level);body(`<h2>Reading · ${level}</h2>`+(t?`<button class="btn item pic" id="rt">${pic(t,'thumb')}<span>${t.title}</span></button>`:noText()));if(t)$('#rt').onclick=()=>readText(t,false);}
+function readText(t,listen){
+  const qs=t.q.map((q,i)=>`<div class="q"><div>${i+1}. ${q[0]}</div><div class="opts">${[['T','True'],['F','False'],['N','Not Given']].map(o=>`<button class="btn opt" data-i="${i}" data-a="${o[0]}">${o[1]}</button>`).join('')}</div></div>`).join('');
+  body(`<button class="btn back" id="bk">← Список</button>${pic(t,'hero')}<h2>${t.title}</h2>
+  ${listen?'':`<div class="text">${markWords(t)}</div>`}
+  <div class="row">${listen?'<button class="btn main" id="pl">Play Audio</button><button class="btn" id="st">Stop</button><button class="btn" id="tg2">Show Text</button>':'<button class="btn" id="tg">Show Translation</button>'}</div>
+  <div class="tr" id="tr">${t.ru}</div>
+  ${listen?`<div class="text" id="tx" style="display:none">${t.text}</div>`:'<p class="sub" style="margin-top:16px">Нажмите на подчёркнутое слово, чтобы сохранить его в словарь.</p>'}${qs}`);
+  $('#bk').onclick=listen?listening:reading;
+  if(listen){
+    $('#pl').onclick=()=>{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t.text);u.lang='en-GB';u.rate=.9;speechSynthesis.speak(u);};
+    $('#st').onclick=()=>speechSynthesis.cancel();
+    $('#tg2').onclick=()=>{const x=$('#tx');x.style.display=x.style.display==='none'?'block':'none';};
+  }else{
+    $('#tg').onclick=()=>{const x=$('#tr');x.style.display=x.style.display==='block'?'none':'block';};
+    document.querySelectorAll('.w').forEach(s=>s.onclick=()=>saveWord(s.dataset.w,s.dataset.t,s));
+  }
+  document.querySelectorAll('.opt').forEach(b=>b.onclick=()=>b.classList.add(t.q[b.dataset.i][1]===b.dataset.a?'right':'wrong')); // проверка ответа
+}
+/* Сохранение слова в localStorage */
+function saveWord(w,tr,el){
+  const l=JSON.parse(localStorage.getItem('words')||'[]');
+  if(!l.some(x=>x.w===w)){l.push({w,t:tr});localStorage.setItem('words',JSON.stringify(l));}
+  el.classList.add('saved');el.title=tr+' — сохранено';
+}
+
+/* ===== Listening ===== */
+function listening(){const t=weeklyText(level);body(`<h2>Listening · ${level}</h2>`+(t?`<button class="btn item pic" id="lt">${pic(t,'thumb')}<span>${t.title}</span></button>`:noText()));if(t)$('#lt').onclick=()=>readText(t,true);}
+
+/* ===== Speaking (SpeechRecognition) ===== */
+function speaking(){
+  const s=SPEAK[weekIdx()%SPEAK.length];
+  body(`<h2>Speaking</h2><p class="text">${s.task}</p><button class="btn main mic" id="mic">Speak</button><div class="out" id="out">Здесь появится распознанный текст.</div>
+  <button class="btn" id="sm">Sample Answer</button><div class="tr" id="sa">${s.sample}</div>`);
+  $('#sm').onclick=()=>{const x=$('#sa');x.style.display=x.style.display==='block'?'none':'block';};
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition,m=$('#mic');let rec=null;
+  m.onclick=()=>{
+    if(rec){rec.stop();return;}
+    if(!SR){$('#out').textContent='Распознавание речи не поддерживается этим браузером. Откройте страницу в Chrome или Edge.';return;}
+    rec=new SR();rec.lang='en-US';rec.interimResults=true;rec.continuous=true;
+    m.classList.add('rec');m.textContent='Stop';
+    rec.onresult=e=>{$('#out').textContent=[...e.results].map(x=>x[0].transcript).join(' ');};
+    rec.onend=()=>{m.classList.remove('rec');m.textContent='Speak';rec=null;};
+    rec.start();
+  };
+}
+
+/* ===== Writing: 5 тем, таймер 40 минут, ChatGPT ===== */
+function writing(){
+  const k=weekIdx()%TOPICS.length,list=TOPICS.map((t,i)=>TOPICS[(i+k)%TOPICS.length]); // тема недели идёт первой и сдвигается каждую неделю
+  body(`<h2>Writing · Task 2</h2><p class="sub" style="margin-top:0">Тема недели — первая в списке.</p>`+list.map((t,i)=>`<button class="btn item${i?'':' main'}" data-i="${i}">${i?'':'This week: '}${t}</button>`).join(''));
+  document.querySelectorAll('.item').forEach(b=>b.onclick=()=>essay(list[b.dataset.i]));
+}
+function essay(topic){
+  let left=2400;
+  body(`<button class="btn back" id="bk">← Темы</button><h2>Task 2</h2><p class="text">${topic}</p><div class="timer" id="tm">40:00</div>
+  <textarea id="es" placeholder="Write at least 250 words..."></textarea>
+  <div class="row"><button class="btn main" id="ck">Check My Essay</button><button class="btn" id="ai">Get Full AI Feedback</button><span id="wc" class="sub" style="margin:0"></span></div><div class="tr" id="rs"></div>`);
+  $('#bk').onclick=()=>{clearInterval(timerId);writing();};
+  clearInterval(timerId);
+  timerId=setInterval(()=>{if(--left<=0){clearInterval(timerId);left=0;}$('#tm').textContent=String(Math.floor(left/60)).padStart(2,'0')+':'+String(left%60).padStart(2,'0');},1000);
+  $('#es').oninput=e=>{$('#wc').textContent=e.target.value.trim().split(/\s+/).filter(Boolean).length+' words';};
+  $('#ck').onclick=()=>checkEssay($('#es').value,$('#rs'));
+  $('#ai').onclick=()=>{
+    const p=`Act as an IELTS examiner. Assess my Task 2 essay by the four criteria (Task Response, Coherence and Cohesion, Lexical Resource, Grammatical Range and Accuracy), give a band score and concrete improvements.\n\nTopic: ${topic}\n\nEssay:\n${$('#es').value}`;
+    window.open('https://chatgpt.com/?q='+encodeURIComponent(p),'_blank');
+  };
+}
+
+/* ===== Проверка эссе (базовый алгоритм, работает без сервера) ===== */
+const STOP=new Set("the and that this with from have has had are was were for not but you your they their them his her its our can will would could should there which what when who how also than then these those into about more most some such any one all been being very much many".split(" "));
+const LINKERS=["however","moreover","therefore","in addition","furthermore","although","whereas","consequently","nevertheless","in conclusion","on the other hand","for example","for instance","as a result","while","despite"];
+function essayStats(text){
+  const words=text.toLowerCase().match(/[a-z']+/g)||[],n=words.length;
+  const sents=text.split(/[.!?]+/).map(x=>x.trim()).filter(Boolean);
+  const avgLen=sents.length?n/sents.length:0,ttr=n?new Set(words).size/n:0; // ttr — разнообразие лексики
+  const long=words.filter(w=>w.length>=8).length/(n||1),low=text.toLowerCase();
+  const linkers=LINKERS.filter(l=>low.includes(l)).length,issues=[],freq={};
+  words.forEach(w=>{if(w.length>3&&!STOP.has(w))freq[w]=(freq[w]||0)+1;});
+  Object.entries(freq).filter(([,c])=>c>=4).sort((a,b)=>b[1]-a[1]).slice(0,4).forEach(([w,c])=>issues.push(`Слово «${w}» повторяется ${c} раз — подберите синонимы.`));
+  if(/\b(\w+)\s+\1\b/i.test(text))issues.push("Есть повторяющиеся подряд слова (например, «the the»).");
+  if(/\bi\b/.test(text))issues.push("Местоимение «I» пишется с заглавной буквы.");
+  if(/\b(don't|can't|won't|isn't|doesn't|didn't|it's)\b/i.test(text))issues.push("Сокращения (don't, can't) нежелательны в формальном эссе.");
+  if(/\b(a lot of|alot|stuff|kids|gonna)\b/i.test(text))issues.push("Есть разговорные слова (a lot of, stuff, kids) — замените на формальные.");
+  const noCap=sents.filter(x=>/^[a-z]/.test(x)).length;if(noCap)issues.push(`Предложений со строчной буквы: ${noCap}.`);
+  if(avgLen>28)issues.push("Предложения слишком длинные — разбейте часть из них.");
+  if(avgLen&&avgLen<10)issues.push("Предложения слишком короткие — добавьте сложные конструкции.");
+  if(n>120&&!/\n\s*\n/.test(text))issues.push("Разделите текст на абзацы: введение, основная часть, заключение.");
+  // Оценка: длина (L), лексика (V), связки (C), грамматика-прокси (G)
+  const L=Math.min(n/250,1),V=Math.min(Math.max((ttr-.4)/.3,0),1)*.6+Math.min(long/.12,1)*.4,C=Math.min(linkers/5,1);
+  const G=Math.max(0,1-issues.length*.12)*(avgLen>=12&&avgLen<=26?1:.8);
+  let band=4+4.5*(.3*L+.25*V+.2*C+.25*G);
+  if(n<250)band=Math.min(band,4+2*n/250); // штраф за короткое эссе
+  band=Math.max(4,Math.min(9,Math.round(band*2)/2));
+  const level=n<40?'A1':band<4.5?'A2':band<5.5?'B1':band<6.5?'B2':'C1';
+  return {n,sents:sents.length,avgLen,ttr,linkers,issues,band,level};
+}
+function checkEssay(text,box){
+  box.style.display='block';
+  if(text.trim().split(/\s+/).length<30){box.textContent='Напишите хотя бы 30 слов, чтобы получить оценку.';return;}
+  const r=essayStats(text);
+  box.innerHTML=`<b style="font-size:1.6rem;font-weight:300">Band ≈ ${r.band.toFixed(1)} · ${r.level}</b><p>Слов: ${r.n} (нужно от 250) · Предложений: ${r.sents} · Средняя длина: ${r.avgLen.toFixed(1)} · Разнообразие лексики: ${Math.round(r.ttr*100)}% · Связок: ${r.linkers}</p>`+(r.issues.length?'<ul style="margin:8px 0 0 18px">'+r.issues.map(i=>`<li>${i}</li>`).join('')+'</ul>':'<p>Типичных ошибок не найдено.</p>')+'<p class="sub" style="margin:10px 0 0;font-size:.9rem">Это приблизительная оценка по длине, лексике и связкам. Грамматику она не проверяет — для точного разбора нажмите Get Full AI Feedback.</p>';
+}
+
+/* ===== Vocabulary ===== */
+function vocab(){
+  const l=JSON.parse(localStorage.getItem('words')||'[]');
+  body(`<h2>Vocabulary</h2>`+(l.length?l.map((x,i)=>`<div class="q row" style="justify-content:space-between"><div><b style="font-weight:500">${x.w}</b> — ${x.t}</div><button class="btn" data-i="${i}">Удалить</button></div>`).join(''):'<p class="sub">Пока пусто. Нажимайте на подчёркнутые слова в разделе Reading.</p>'));
+  document.querySelectorAll('#secBody [data-i]').forEach(b=>b.onclick=()=>{l.splice(b.dataset.i,1);localStorage.setItem('words',JSON.stringify(l));vocab();});
+}
+</script>
+</body>
+</html>
